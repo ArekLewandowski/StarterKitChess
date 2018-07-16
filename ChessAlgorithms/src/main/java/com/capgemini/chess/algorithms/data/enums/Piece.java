@@ -28,8 +28,6 @@ public enum Piece {
 
     private final PieceType type;
     private final Color color;
-    //Dodanie listy przechowujacej dostepne pola dla piona w turze
-    public List<Coordinate> movesAvaible = new ArrayList<Coordinate>();
 
     Piece(PieceType type, Color color) {
         this.type = type;

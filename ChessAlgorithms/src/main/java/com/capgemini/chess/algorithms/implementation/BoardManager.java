@@ -1,10 +1,19 @@
 package com.capgemini.chess.algorithms.implementation;
 
+import java.awt.Window.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.capgemini.chess.algorithms.data.Coordinate;
 import com.capgemini.chess.algorithms.data.Move;
+import com.capgemini.chess.algorithms.data.PieceMoveValidator;
+import com.capgemini.chess.algorithms.data.bishopMoveValidator;
+import com.capgemini.chess.algorithms.data.kingMoveValidator;
+import com.capgemini.chess.algorithms.data.knightMoveValidator;
+import com.capgemini.chess.algorithms.data.pawnMoveValidator;
+import com.capgemini.chess.algorithms.data.queenMoveValidator;
+import com.capgemini.chess.algorithms.data.rookMoveValidator;
 import com.capgemini.chess.algorithms.data.enums.BoardState;
 import com.capgemini.chess.algorithms.data.enums.Color;
 import com.capgemini.chess.algorithms.data.enums.MoveType;
@@ -61,8 +70,11 @@ public class BoardManager {
 	 *             in case move is not valid
 	 */
 	public Move performMove(Coordinate from, Coordinate to) throws InvalidMoveException {
+		
+		
 
 		Move move = validateMove(from, to);
+		
 
 		addMove(move);
 
@@ -232,6 +244,31 @@ public class BoardManager {
 	}
 
 	private Move validateMove(Coordinate from, Coordinate to) throws InvalidMoveException, KingInCheckException {
+		
+		Move validatedMove = new Move();
+		
+		if (isOnBoard(from) && (isOnBoard(to))){
+			
+			if ((isAppropColor(from)) && (this.board.getPieceAt(from)!=null)){
+				
+				if ((!isAppropColor(to)) || (this.board.getPieceAt(to)==null)){
+					
+				    if(PieceChecker(from,to)){
+				     validatedMove.setFrom(from);
+				     validatedMove.setTo(to);
+				     validatedMove.setMovedPiece(this.board.getPieceAt(from));
+				     validatedMove.setType(updateMoveType(to));
+				     return validatedMove;
+				    }
+				 
+				}
+				
+			}
+			throw new InvalidMoveException();
+		}
+			
+		
+		
 
 		// TODO please add implementation here
 		return null;
@@ -271,5 +308,67 @@ public class BoardManager {
 
 		return lastNonAttackMoveIndex;
 	}
+	
+	private boolean PieceChecker(Coordinate from, Coordinate to) {
+		PieceType type = board.getPieceAt(from).getType();
+		PieceMoveValidator moveValidator;
+		boolean isValidate = false;
+		switch (type) {
+		case KING:
+			moveValidator = new kingMoveValidator();
+			isValidate = moveValidator.checkMove(board, from, to);
+			break;
+		case QUEEN:
+			moveValidator = new queenMoveValidator();
+			isValidate = moveValidator.checkMove(board, from, to);
+			break;
+		case BISHOP:
+			moveValidator = new bishopMoveValidator();
+			isValidate = moveValidator.checkMove(board, from, to);
+			break;
+		case KNIGHT:
+			moveValidator = new knightMoveValidator();
+			isValidate = moveValidator.checkMove(board, from, to);
+			break;
+		case ROOK:
+			moveValidator = new rookMoveValidator();
+			isValidate = moveValidator.checkMove(board, from, to);
+			break;
+		case PAWN:
+			moveValidator = new pawnMoveValidator();
+			isValidate = moveValidator.checkMove(board, from, to);
+			break;
 
+		default:
+			break;
+		}
+		return isValidate;
+	}
+	
+	private boolean isOnBoard(Coordinate coordinate) {
+		if((coordinate.getX()>=0 && coordinate.getX()<=7) && (coordinate.getY()>=0 && coordinate.getY()<=7)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	private boolean isAppropColor(Coordinate coordinate) {
+		if((this.board.getPieceAt(coordinate)!=null) && (this.board.getPieceAt(coordinate).getColor().equals(calculateNextMoveColor()))){
+			return true;
+		}
+		return false;
+	}
+	
+	private MoveType updateMoveType(Coordinate to) {
+		Piece checkedPiece = this.board.getPieceAt(to);
+		if(checkedPiece==null){
+			return MoveType.ATTACK;
+		}else if (calculateNextMoveColor()!=checkedPiece.getColor()) {
+			return MoveType.CAPTURE;
+			
+		}else{
+			return MoveType.ATTACK;
+		}
+	}
 }
