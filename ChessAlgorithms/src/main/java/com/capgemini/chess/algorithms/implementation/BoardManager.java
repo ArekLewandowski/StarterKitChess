@@ -3,16 +3,10 @@ package com.capgemini.chess.algorithms.implementation;
 import java.util.Arrays;
 import java.util.List;
 
-import com.capgemini.chess.algorithms.data.BishopMoveValidator;
+import com.capgemini.chess.algorithms.data.BoardDuplicator;
 import com.capgemini.chess.algorithms.data.Coordinate;
-import com.capgemini.chess.algorithms.data.KingMoveValidator;
-import com.capgemini.chess.algorithms.data.KnightMoveValidator;
 import com.capgemini.chess.algorithms.data.Move;
-import com.capgemini.chess.algorithms.data.PawnMoveValidator;
 import com.capgemini.chess.algorithms.data.PieceMoveSys;
-import com.capgemini.chess.algorithms.data.PieceMoveValidator;
-import com.capgemini.chess.algorithms.data.QueenMoveValidator;
-import com.capgemini.chess.algorithms.data.RookMoveValidator;
 import com.capgemini.chess.algorithms.data.enums.BoardState;
 import com.capgemini.chess.algorithms.data.enums.Color;
 import com.capgemini.chess.algorithms.data.enums.MoveType;
@@ -73,12 +67,12 @@ public class BoardManager {
 
 		Color pieceColor = calculateNextMoveColor();
 		Move move = validateMove(from, to);
-		Board copyOfBoard = boardDuplicator(this.board);
+		Board copyOfBoard = BoardDuplicator.duplicateBoard(this.board);
 		 
 		addMove(move);
 		if (isKingInCheck(pieceColor)) {
-			for(int x = 0; x<board.SIZE; x++){
-				for(int y = 0; y<board.SIZE; y++){
+			for(int x = 0; x<Board.SIZE; x++){
+				for(int y = 0; y<Board.SIZE; y++){
 					Coordinate coordinate = new Coordinate(x, y);
 					board.setPieceAt(copyOfBoard.getPieceAt(coordinate), coordinate);
 					System.out.println("Update");
@@ -283,8 +277,8 @@ public class BoardManager {
 
 	private boolean isKingInCheck(Color kingColor) throws InvalidMoveException {
 		Coordinate kingsCoordinate = isKingOnBoard(kingColor);
-		for(int x = 0; x<board.SIZE; x++){
-			for(int y = 0; y<board.SIZE; y++){
+		for(int x = 0; x<Board.SIZE; x++){
+			for(int y = 0; y<Board.SIZE; y++){
 				Coordinate coordinate = new Coordinate(x, y);
 				if(this.board.getPieceAt(coordinate)!=null){
 					if (!this.board.getPieceAt(coordinate).getColor().equals(kingColor)) {
@@ -305,11 +299,34 @@ public class BoardManager {
 		return false;
 	}
 
-	private boolean isAnyMoveValid(Color nextMoveColor) {
+	private boolean isAnyMoveValid(Color nextMoveColor) throws InvalidMoveException {
+		Coordinate pieceCoordinate;
+		Coordinate targetCoordinate;
+		
+		for(int checkedPieceX = 0; checkedPieceX<Board.SIZE; checkedPieceX++){
+			for(int checkedPieceY = 0; checkedPieceY<Board.SIZE; checkedPieceY++){
+				pieceCoordinate = new Coordinate(checkedPieceX, checkedPieceY);
+				if(this.board.getPieceAt(pieceCoordinate)!=null && this.board.getPieceAt(pieceCoordinate).getColor().equals(nextMoveColor)){
+					
+					for(int targetPieceX = 0; targetPieceX<Board.SIZE; targetPieceX++){
+						for(int targetPieceY = 0; targetPieceY<Board.SIZE; targetPieceY++){
+							targetCoordinate = new Coordinate(targetPieceX, targetPieceY);
+							try{
+							if(PieceMoveSys.pieceChecker(board, pieceCoordinate, targetCoordinate)){
+								return true;
+							}
+							}catch (InvalidMoveException e) {
+												
+							}
+						}	
+					}
+						
+				}
+			}
+		
+		}
 
-		// TODO please add implementation here
-
-		return true;
+		return false;
 	}
 
 	private Color calculateNextMoveColor() {
@@ -334,41 +351,7 @@ public class BoardManager {
 		return lastNonAttackMoveIndex;
 	}
 	
-//	private boolean pieceChecker(Coordinate from, Coordinate to) throws InvalidMoveException {
-//		PieceType type = board.getPieceAt(from).getType();
-//		boolean isValidate = false;
-//		PieceMoveValidator moveValidator;
-//		switch (type) {
-//		case KING:
-//			moveValidator = new KingMoveValidator();
-//			isValidate = moveValidator.checkMove(this.board, from, to);
-//			break;
-//		case QUEEN:
-//			moveValidator = new QueenMoveValidator();
-//			isValidate = moveValidator.checkMove(this.board, from, to);
-//			break;
-//		case BISHOP:
-//			moveValidator = new BishopMoveValidator();
-//			isValidate = moveValidator.checkMove(this.board, from, to);
-//			break;
-//		case KNIGHT:
-//			moveValidator = new KnightMoveValidator();
-//			isValidate = moveValidator.checkMove(this.board, from, to);
-//			break;
-//		case ROOK:
-//			moveValidator = new RookMoveValidator();
-//			isValidate = moveValidator.checkMove(this.board, from, to);
-//			break;
-//		case PAWN:
-//			moveValidator = new PawnMoveValidator();
-//			isValidate = moveValidator.checkMove(this.board, from, to);
-//			break;
-//
-//		default:
-//			break;
-//		}
-//		return isValidate;
-//	}
+
 	
 	private boolean isFieldOnBoard(Coordinate coordinate) {
 		if((coordinate.getX()>=0 && coordinate.getX()<=7) && (coordinate.getY()>=0 && coordinate.getY()<=7)){
@@ -389,17 +372,15 @@ public class BoardManager {
 		Piece checkedPiece = this.board.getPieceAt(to);
 		if(checkedPiece==null){
 			return MoveType.ATTACK;
-		}else if (calculateNextMoveColor()!=checkedPiece.getColor()) {
+		}else{ 
 			return MoveType.CAPTURE;
 			
-		}else{
-			return MoveType.ATTACK;
 		}
 	}
 	
 	private Coordinate isKingOnBoard(Color kingColor) throws NoKingOnBoardException{
-		for(int x = 0; x<board.SIZE; x++){
-			for(int y = 0; y<board.SIZE; y++){
+		for(int x = 0; x<Board.SIZE; x++){
+			for(int y = 0; y<Board.SIZE; y++){
 				Coordinate coordinate = new Coordinate(x, y);
 				if(this.board.getPieceAt(coordinate)!=null){
 					if ((this.board.getPieceAt(coordinate).getType().equals(PieceType.KING)) 
@@ -414,16 +395,5 @@ public class BoardManager {
 		throw new NoKingOnBoardException();
 	}
 	
-	private Board boardDuplicator(Board board) {
-		Board copyOfPieces = new Board();
-		for(int x = 0; x<board.SIZE; x++){
-			for(int y = 0; y<board.SIZE; y++){
-			Coordinate coordinate = new Coordinate(x, y);	
-			Piece tempPiece = board.getPieceAt(coordinate);
-			copyOfPieces.setPieceAt(tempPiece, coordinate);
-			}
-		}
-		return copyOfPieces;
-	}
 	
 }

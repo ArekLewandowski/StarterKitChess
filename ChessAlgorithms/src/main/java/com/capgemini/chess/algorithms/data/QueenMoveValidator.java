@@ -45,8 +45,8 @@ public class QueenMoveValidator implements PieceMoveValidator{
 			if ((toX+toY)==(fromX+fromY)||(toX-fromX)==(toY-fromY)) {
 				modX = fromX<toX ? 1 : -1;
 				modY = fromY<toY ? 1 : -1;
-				for(int i = 0; i!=((fromX-toX)*modX)-1; i++){
-					checkedCoord = new Coordinate(fromX+i, fromY+i);
+				for(int i = 0; i!=((fromX-toX)*(modX*-1)-1); i++){
+					checkedCoord = new Coordinate(fromX+(modX*i), fromY+(modY*i));
 					if (board.getPieceAt(checkedCoord)!=null) {
 						throw new QueenInvalidMoveException();
 					}

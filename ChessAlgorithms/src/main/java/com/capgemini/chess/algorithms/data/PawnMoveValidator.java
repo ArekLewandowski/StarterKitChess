@@ -26,8 +26,7 @@ public class PawnMoveValidator implements PieceMoveValidator{
 			//trzeba sprawdzic czy jest bicie czy nie
 			if(toX == fromX && board.getPieceAt(to)==null){
 				return true;
-			}else if ((toX == fromX-1 || toX == fromX+1) && (!board.getPieceAt(to).equals(null)) 
-					&& (!board.getPieceAt(to).getColor().equals(board.getPieceAt(from).getColor()))){
+			}else if ((toX == fromX-1 || toX == fromX+1) && (board.getPieceAt(to)!=null)){
 				return true;
 			}else{
 				throw new PawnInvalidMoveException();

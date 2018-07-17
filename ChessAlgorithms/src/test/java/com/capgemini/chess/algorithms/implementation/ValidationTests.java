@@ -34,18 +34,18 @@ public class ValidationTests {
 		Coordinate from5 = new Coordinate(2, 1);
 		Coordinate to5 = new Coordinate(2, 2);
 		bManager.performMove(from5, to5);
-		//Black Knight to 3 2
+//		//Black Knight to 3 2
 		Coordinate from6 = new Coordinate(2, 4);
 		Coordinate to6 = new Coordinate(3, 2);
 		bManager.performMove(from6, to6);
 //		White Pawn 2 field move
-		Coordinate from7 = new Coordinate(6, 1);
-		Coordinate to7 = new Coordinate(6, 2);
-		bManager.performMove(from7, to7);
+	//	Coordinate from7 = new Coordinate(6, 1);
+		//Coordinate to7 = new Coordinate(6, 2);
+	//	bManager.performMove(from7, to7);
 //		//Invalid move of White
-//		Coordinate from8 = new Coordinate(6, 2);
-//		Coordinate to8 = new Coordinate(6, 3);
-//		bManager.performMove(from8, to8);
+		Coordinate from8 = new Coordinate(4, 1);
+		Coordinate to8 = new Coordinate(3, 2);
+		bManager.performMove(from8, to8);
 //		
 		for(int y = 0; y<8; y++){
 			for(int x = 0; x<8; x++){
@@ -56,7 +56,6 @@ public class ValidationTests {
 			}
 			System.out.println(" ");
 			//System.out.println(bManager.getBoard().getMoveHistory());
-			
 			
 		}		
 		System.out.println(bManager.getBoard().getState());
