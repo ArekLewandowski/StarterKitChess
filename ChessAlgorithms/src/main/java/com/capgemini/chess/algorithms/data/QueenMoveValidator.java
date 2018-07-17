@@ -1,8 +1,9 @@
 package com.capgemini.chess.algorithms.data;
 
 import com.capgemini.chess.algorithms.data.generated.Board;
+import com.capgemini.chess.algorithms.implementation.exceptions.QueenInvalidMoveException;
 
-public class queenMoveValidator implements PieceMoveValidator{
+public class QueenMoveValidator implements PieceMoveValidator{
 
 	private int fromX;
 	private int fromY;
@@ -12,7 +13,7 @@ public class queenMoveValidator implements PieceMoveValidator{
 	private int modX;
 	Coordinate checkedCoord;
 	@Override
-	public boolean checkMove(Board board, Coordinate from, Coordinate to) {
+	public boolean checkMove(Board board, Coordinate from, Coordinate to) throws QueenInvalidMoveException {
 		fromX = from.getX();
 		fromY = from.getY();
 		toX = to.getX();
@@ -23,7 +24,7 @@ public class queenMoveValidator implements PieceMoveValidator{
 			for(int x = fromX; x!=toX-modX; x=x+modX ){
 				checkedCoord = new Coordinate(x, fromY);
 				if(board.getPieceAt(checkedCoord)!=null){
-					return false;
+					throw new QueenInvalidMoveException();
 				}
 				
 			}
@@ -35,7 +36,7 @@ public class queenMoveValidator implements PieceMoveValidator{
 			for(int y = fromY; y!=toY-modY; y=y+modY ){
 				checkedCoord = new Coordinate(fromX, y);
 				if(board.getPieceAt(checkedCoord)!=null){
-					return false;
+					throw new QueenInvalidMoveException();
 					}
 				}
 		
@@ -44,17 +45,17 @@ public class queenMoveValidator implements PieceMoveValidator{
 			if ((toX+toY)==(fromX+fromY)||(toX-fromX)==(toY-fromY)) {
 				modX = fromX<toX ? 1 : -1;
 				modY = fromY<toY ? 1 : -1;
-				for(int i = 0; i!=((fromX-toX)*modX)-1; i++){
-					checkedCoord = new Coordinate(fromX+i, fromY+i);
+				for(int i = 0; i!=((fromX-toX)*(modX*-1)-1); i++){
+					checkedCoord = new Coordinate(fromX+(modX*i), fromY+(modY*i));
 					if (board.getPieceAt(checkedCoord)!=null) {
-						return false;
+						throw new QueenInvalidMoveException();
 					}
 					
 				}
 				return true;
 			}
 		}
-		return false;
+		throw new QueenInvalidMoveException();
 	}
 
 
