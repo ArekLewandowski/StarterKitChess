@@ -1,8 +1,9 @@
 package com.capgemini.chess.algorithms.data;
 
 import com.capgemini.chess.algorithms.data.generated.Board;
+import com.capgemini.chess.algorithms.implementation.exceptions.RookInvalidMoveException;
 
-public class rookMoveValidator implements PieceMoveValidator{
+public class RookMoveValidator implements PieceMoveValidator{
 	
 		private int fromX;
 		private int fromY;
@@ -12,7 +13,7 @@ public class rookMoveValidator implements PieceMoveValidator{
 		private int modX;
 		Coordinate checkedCoord;
 		@Override
-		public boolean checkMove(Board board, Coordinate from, Coordinate to) {
+		public boolean checkMove(Board board, Coordinate from, Coordinate to) throws RookInvalidMoveException {
 			fromX = from.getX();
 			fromY = from.getY();
 			toX = to.getX();
@@ -23,7 +24,7 @@ public class rookMoveValidator implements PieceMoveValidator{
 				for(int x = fromX; x==toX-modX; x=x+modX ){
 					checkedCoord = new Coordinate(x, fromY);
 					if(board.getPieceAt(checkedCoord)!=null){
-						return false;
+						throw new RookInvalidMoveException();
 					}
 					
 				}
@@ -35,13 +36,13 @@ public class rookMoveValidator implements PieceMoveValidator{
 				for(int y = fromY; y==toY-modY; y=y+modY ){
 					checkedCoord = new Coordinate(fromX, y);
 					if(board.getPieceAt(checkedCoord)!=null){
-						return false;
+						throw new RookInvalidMoveException();
 						}
 					}
 			
 				return true;
 			}
-			return false;
+			throw new RookInvalidMoveException();
 		}
 
 }

@@ -3,8 +3,6 @@ package com.capgemini.chess.algorithms.data.enums;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.capgemini.chess.algorithms.data.Coordinate;
-
 /**
  * Chess piece definition
  * 

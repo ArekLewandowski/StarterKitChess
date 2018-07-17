@@ -1,8 +1,9 @@
 package com.capgemini.chess.algorithms.data;
 
 import com.capgemini.chess.algorithms.data.generated.Board;
+import com.capgemini.chess.algorithms.implementation.exceptions.KingInvalidMoveException;
 
-public class kingMoveValidator implements PieceMoveValidator{
+public class KingMoveValidator implements PieceMoveValidator{
 
 	private int fromX;
 	private int fromY;
@@ -10,7 +11,7 @@ public class kingMoveValidator implements PieceMoveValidator{
 	private int toY;
 	
 	@Override
-	public boolean checkMove(Board board, Coordinate from, Coordinate to) {
+	public boolean checkMove(Board board, Coordinate from, Coordinate to) throws KingInvalidMoveException {
 		fromX = from.getX();
 		fromY = from.getY();
 		toX = to.getX();
@@ -23,7 +24,7 @@ public class kingMoveValidator implements PieceMoveValidator{
 		
 		}
 		
-		return false;
+		throw new KingInvalidMoveException();
 	}
 
 	
