@@ -11,7 +11,14 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ BoardManagerTest.class })
+@SuiteClasses({ BoardManagerTest.class,
+	BishopMoveValidationTest.class,
+	PawnMoveValidationTests.class,
+	RookMoveValidationTests.class,
+	KnightMoveValidationTests.class,
+	QueenMoveValidatonTests.class,
+	KingMoveValidatorTests.class,
+	ValidationTests.class})
 public class ChessTestSuite {
 
 }
