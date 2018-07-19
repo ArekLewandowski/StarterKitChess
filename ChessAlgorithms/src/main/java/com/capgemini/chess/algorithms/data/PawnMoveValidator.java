@@ -15,6 +15,7 @@ public class PawnMoveValidator implements PieceMoveValidator {
 	private int toY;
 	private int modY;
 	private int startPos;
+	Color myColor;
 	List<Coordinate> validMove = new ArrayList<>();
 
 	@Override
@@ -23,29 +24,26 @@ public class PawnMoveValidator implements PieceMoveValidator {
 		fromY = from.getY();
 		toX = to.getX();
 		toY = to.getY();
-		modY = board.getPieceAt(from).getColor() == Color.WHITE ? 1 : -1;
-		startPos = board.getPieceAt(from).getColor() == Color.WHITE ? 1 : 6;
+		myColor = board.getPieceAt(from).getColor();
+		modY = myColor == Color.WHITE ? 1 : -1;
+		startPos = myColor == Color.WHITE ? 1 : 6;
 
 		if (isOnBoard(toX, toY)) {
 
-			if (isItNull(board, from, to)) {
+			if (isItNull(board, to)) {
 
-				if (fromY + modY == toY) {
-
-					if (toX == fromX && board.getPieceAt(to) == null) {
-						return true;
-					} else if ((toX == fromX - 1 || toX == fromX + 1) && (board.getPieceAt(to) != null)) {
-						return true;
-					} else {
-						throw new PawnInvalidMoveException();
-					}
+				if ((fromY + modY == toY) && (toX == fromX)){
+					return true;
 				} else if ((fromY == startPos) && (board.getPieceAt(new Coordinate(fromX, fromY + modY)) == null)) {
 					if (fromY + (2 * modY) == toY) {
 						return true;
 					}
-				} else {
-
+				
 					throw new PawnInvalidMoveException();
+				}
+			}else if (isEnemy(board, myColor, to)) {
+				if ((toX == fromX - 1 || toX == fromX + 1) && (fromY + modY == toY)){
+				return true;
 				}
 			}
 		}
@@ -55,9 +53,25 @@ public class PawnMoveValidator implements PieceMoveValidator {
 	public List<Coordinate> checkAnyMove(Board board, Coordinate from) throws PawnInvalidMoveException {
 		fromX = from.getX();
 		fromY = from.getY();
+		modY = myColor == Color.WHITE ? 1 : -1;
+		Coordinate checkedCoordinate = new Coordinate(fromX, fromY + modY);
 		try {
-			modY = board.getPieceAt(from).getColor() == Color.WHITE ? 1 : -1;
-			Coordinate checkedCoordinate = new Coordinate(fromX, fromY + modY);
+			if (checkMove(board, from, checkedCoordinate)) {
+				validMove.add(checkedCoordinate);
+			}
+		} catch (PawnInvalidMoveException e) {
+
+		}
+		checkedCoordinate = new Coordinate(fromX-1, fromY + modY);
+		try {
+			if (checkMove(board, from, checkedCoordinate)) {
+				validMove.add(checkedCoordinate);
+			}
+		} catch (PawnInvalidMoveException e) {
+
+		}
+		checkedCoordinate = new Coordinate(fromX+1, fromY + modY);
+		try {
 			if (checkMove(board, from, checkedCoordinate)) {
 				validMove.add(checkedCoordinate);
 			}
@@ -77,7 +91,7 @@ public class PawnMoveValidator implements PieceMoveValidator {
 		}
 	}
 
-	private boolean isItNull(Board board, Coordinate from, Coordinate to) {
+	private boolean isItNull(Board board, Coordinate to) {
 
 		if (board.getPieceAt(to) == null){
 				//|| !board.getPieceAt(to).getColor().equals(board.getPieceAt(from).getColor())) {
@@ -85,6 +99,16 @@ public class PawnMoveValidator implements PieceMoveValidator {
 		} else {
 			return false;
 		}
+	}
+	
+	private boolean isEnemy(Board board, Color myColor, Coordinate to) {
+		
+		if (myColor.equals(board.getPieceAt(to).getColor())) {
+			return false;
+		}else{
+			return true;
+		}
+		
 	}
 
 }

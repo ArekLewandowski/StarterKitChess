@@ -668,6 +668,18 @@ public class BoardManagerTest {
 		// when
 		BoardState boardState = boardManager.updateBoardState();
 		
+		for(int y = 0; y<8; y++){
+			for(int x = 0; x<8; x++){
+				Coordinate coordinate = new Coordinate(x, y);
+				Piece checkedpiece = boardManager.getBoard().getPieceAt(coordinate);
+				System.out.print("X: "+x+" , Y: "+y+" => ");
+				System.out.print(checkedpiece+"    ");
+			}
+			System.out.println(" ");
+			//System.out.println(bManager.getBoard().getMoveHistory());
+			
+		}		
+			
 		// then
 		assertEquals(BoardState.REGULAR, boardState);
 	}
