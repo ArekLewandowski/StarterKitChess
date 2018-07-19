@@ -696,10 +696,13 @@ public class BoardManagerTest {
 		board.setPieceAt(Piece.WHITE_ROOK, new Coordinate(0, 1));
 		board.setPieceAt(Piece.WHITE_ROOK, new Coordinate(1, 0));
 		board.setPieceAt(Piece.BLACK_KING, new Coordinate(4, 0));
+		board.setPieceAt(Piece.WHITE_KING, new Coordinate(7, 7));
 		
 		// when
 		BoardManager boardManager = new BoardManager(board);
 		BoardState boardState = boardManager.updateBoardState();
+		
+		
 		
 		// then
 		assertEquals(BoardState.CHECK_MATE, boardState);
@@ -717,6 +720,18 @@ public class BoardManagerTest {
 		// when
 		BoardManager boardManager = new BoardManager(board);
 		BoardState boardState = boardManager.updateBoardState();
+		
+		for(int y = 0; y<8; y++){
+			for(int x = 0; x<8; x++){
+				Coordinate coordinate = new Coordinate(x, y);
+				Piece checkedpiece = board.getPieceAt(coordinate);
+				System.out.print("X: "+x+" , Y: "+y+" => ");
+				System.out.print(checkedpiece+"    ");
+			}
+			System.out.println(" ");
+			
+			
+		}	
 		
 		// then
 		assertEquals(BoardState.STALE_MATE, boardState);

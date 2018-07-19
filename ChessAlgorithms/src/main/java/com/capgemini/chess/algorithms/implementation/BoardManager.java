@@ -1,12 +1,15 @@
 package com.capgemini.chess.algorithms.implementation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import com.capgemini.chess.algorithms.data.BoardDuplicator;
 import com.capgemini.chess.algorithms.data.Coordinate;
 import com.capgemini.chess.algorithms.data.Move;
 import com.capgemini.chess.algorithms.data.PieceMoveSys;
+import com.capgemini.chess.algorithms.data.PieceMoveValidator;
 import com.capgemini.chess.algorithms.data.enums.BoardState;
 import com.capgemini.chess.algorithms.data.enums.Color;
 import com.capgemini.chess.algorithms.data.enums.MoveType;
@@ -71,13 +74,9 @@ public class BoardManager {
 		 
 		addMove(move);
 		if (isKingInCheck(pieceColor)) {
-			for(int x = 0; x<Board.SIZE; x++){
-				for(int y = 0; y<Board.SIZE; y++){
-					Coordinate coordinate = new Coordinate(x, y);
-					board.setPieceAt(copyOfBoard.getPieceAt(coordinate), coordinate);
-					System.out.println("Update");
-				}
-			}
+			this.board = BoardDuplicator.boardResetter(board, copyOfBoard);
+			this.board.getMoveHistory().remove(board.getMoveHistory().size()-1);
+			throw new KingInCheckException();
 		}
 		updateBoardState();
 
@@ -257,7 +256,7 @@ public class BoardManager {
 				
 				if ((!isAppropColor(to)) || (this.board.getPieceAt(to)==null)){
 					
-				    if(PieceMoveSys.pieceChecker(this.board,from,to)){
+					if(PieceMoveSys.pieceChecker(this.board,from,to)){
 				    	
 				     validatedMove.setFrom(from);
 				     validatedMove.setTo(to);
@@ -284,11 +283,15 @@ public class BoardManager {
 					if (!this.board.getPieceAt(coordinate).getColor().equals(kingColor)) {
 						try{
 							if(PieceMoveSys.pieceChecker(this.board, coordinate, kingsCoordinate)){
-								System.out.println(this.board.getPieceAt(kingsCoordinate)+" is in check");
-								throw new KingInCheckException();
+								
+								
+								//System.out.println(this.board.getPieceAt(kingsCoordinate)+" is in check");
+								return true;
+								//throw new KingInCheckException();
+								
 							}
 							}catch (InvalidMoveException e) {
-								System.out.print("");
+								
 							
 						}
 					}
@@ -300,31 +303,39 @@ public class BoardManager {
 	}
 
 	private boolean isAnyMoveValid(Color nextMoveColor) throws InvalidMoveException {
+		List<Coordinate> validMoves = new ArrayList<>();
+		Color myColor = calculateNextMoveColor();
 		Coordinate pieceCoordinate;
-		Coordinate targetCoordinate;
+		Board copyOfBoard = BoardDuplicator.duplicateBoard(this.board);
 		
 		for(int checkedPieceX = 0; checkedPieceX<Board.SIZE; checkedPieceX++){
 			for(int checkedPieceY = 0; checkedPieceY<Board.SIZE; checkedPieceY++){
 				pieceCoordinate = new Coordinate(checkedPieceX, checkedPieceY);
-				if(this.board.getPieceAt(pieceCoordinate)!=null && this.board.getPieceAt(pieceCoordinate).getColor().equals(nextMoveColor)){
+				if(this.board.getPieceAt(pieceCoordinate)!=null && this.board.getPieceAt(pieceCoordinate).getColor().equals(myColor)){
 					
-					for(int targetPieceX = 0; targetPieceX<Board.SIZE; targetPieceX++){
-						for(int targetPieceY = 0; targetPieceY<Board.SIZE; targetPieceY++){
-							targetCoordinate = new Coordinate(targetPieceX, targetPieceY);
-							try{
-							if(PieceMoveSys.pieceChecker(board, pieceCoordinate, targetCoordinate)){
-								return true;
+					try{
+						validMoves.addAll(PieceMoveSys.anyMovePieceChecker(board, pieceCoordinate));
+						Iterator<Coordinate> iterator = validMoves.iterator();
+						while(iterator.hasNext()){
+							
+							Move move = new Move();
+							Coordinate to = iterator.next();
+							move.setFrom(pieceCoordinate);
+							move.setTo(to);
+							
+							BoardManager copyOfBoardManager = new BoardManager(copyOfBoard);
+							copyOfBoardManager.addRegularMove(move);
+								if(!copyOfBoardManager.isKingInCheck(myColor)){
+									return true;
+								}
 							}
-							}catch (InvalidMoveException e) {
+						}catch (InvalidMoveException e) {
 												
-							}
-						}	
-					}
-						
+						}
+					}	
 				}
+						
 			}
-		
-		}
 
 		return false;
 	}
