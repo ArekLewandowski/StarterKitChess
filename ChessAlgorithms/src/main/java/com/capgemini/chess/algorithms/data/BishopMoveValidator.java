@@ -30,10 +30,12 @@ public class BishopMoveValidator implements PieceMoveValidator {
 				if ((toX + toY) == (fromX + fromY) || (toX - fromX) == (toY - fromY)) {
 					modX = fromX < toX ? 1 : -1;
 					modY = fromY < toY ? 1 : -1;
-					for (int i = 1; i != ((fromX - toX) * -modX) - 1; i++) {
-						checkedCoord = new Coordinate(fromX + (i * modX), fromY + (i * modY));
-						if (board.getPieceAt(checkedCoord) != null) {
-							throw new BishopInvalidMoveException();
+					if ((fromX + 1 != toX) && (fromX - 1 != toX)) {
+						for (int i = 1; i != ((fromX - toX) * -modX) - 1; i++) {
+							checkedCoord = new Coordinate(fromX + (i * modX), fromY + (i * modY));
+							if (board.getPieceAt(checkedCoord) != null) {
+								throw new BishopInvalidMoveException();
+							}
 						}
 
 					}
@@ -61,31 +63,31 @@ public class BishopMoveValidator implements PieceMoveValidator {
 			if (checkMove(board, from, checkedCoordinate)) {
 				validMove.add(checkedCoordinate);
 			}
-				
+
 		} catch (BishopInvalidMoveException e) {
-				
+
 		}
 		checkedCoordinate = new Coordinate(fromX + 1, fromY + 1);
 		try {
 			if (checkMove(board, from, checkedCoordinate)) {
 				validMove.add(checkedCoordinate);
 			}
-	
+
 		} catch (Exception e) {
-	
+
 		}
 		checkedCoordinate = new Coordinate(fromX - 1, fromY + 1);
-	try {
-		if (checkMove(board, from, checkedCoordinate)) {
-			validMove.add(checkedCoordinate);
+		try {
+			if (checkMove(board, from, checkedCoordinate)) {
+				validMove.add(checkedCoordinate);
+			}
+
+		} catch (BishopInvalidMoveException e) {
+
 		}
-		
-	} catch (BishopInvalidMoveException e) {
-		
-	}
 
 		return validMove;
-}
+	}
 
 	private boolean isOnBoard(int toX, int toY) {
 		int x = toX;

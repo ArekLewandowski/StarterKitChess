@@ -2,6 +2,7 @@ package com.capgemini.chess.algorithms.implementation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import com.capgemini.chess.algorithms.data.BoardDuplicator;
@@ -255,7 +256,7 @@ public class BoardManager {
 				
 				if ((!isAppropColor(to)) || (this.board.getPieceAt(to)==null)){
 					
-				    if(PieceMoveSys.pieceChecker(this.board,from,to)){
+					if(PieceMoveSys.pieceChecker(this.board,from,to)){
 				    	
 				     validatedMove.setFrom(from);
 				     validatedMove.setTo(to);
@@ -284,13 +285,13 @@ public class BoardManager {
 							if(PieceMoveSys.pieceChecker(this.board, coordinate, kingsCoordinate)){
 								
 								
-								System.out.println(this.board.getPieceAt(kingsCoordinate)+" is in check");
+								//System.out.println(this.board.getPieceAt(kingsCoordinate)+" is in check");
 								return true;
 								//throw new KingInCheckException();
 								
 							}
 							}catch (InvalidMoveException e) {
-								System.out.print("");
+								
 							
 						}
 					}
@@ -314,10 +315,11 @@ public class BoardManager {
 					
 					try{
 						validMoves.addAll(PieceMoveSys.anyMovePieceChecker(board, pieceCoordinate));
-						while(validMoves.iterator().hasNext()){
+						Iterator<Coordinate> iterator = validMoves.iterator();
+						while(iterator.hasNext()){
 							
 							Move move = new Move();
-							Coordinate to = validMoves.iterator().next();
+							Coordinate to = iterator.next();
 							move.setFrom(pieceCoordinate);
 							move.setTo(to);
 							

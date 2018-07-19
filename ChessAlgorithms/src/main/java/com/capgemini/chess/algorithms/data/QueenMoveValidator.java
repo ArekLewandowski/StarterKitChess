@@ -30,24 +30,27 @@ public class QueenMoveValidator implements PieceMoveValidator {
 
 				if (fromY == toY) {
 					modX = fromX > toX ? -1 : 1;
-					for (int x = fromX; x != toX - modX; x = x + modX) {
-						checkedCoord = new Coordinate(x, fromY);
-						if (board.getPieceAt(checkedCoord) != null) {
-							throw new QueenInvalidMoveException();
+					if ((fromX + 1 != toX) && (fromX - 1 != toX)) {
+						for (int x = fromX+1; x != toX+(-modX); x = x + modX) {
+							checkedCoord = new Coordinate(x, fromY);
+							if (board.getPieceAt(checkedCoord) != null) {
+								throw new QueenInvalidMoveException();
+							}
 						}
 					}
 
 					return true;
 
 				} else if (fromX == toX) {
-					modY = fromY > toY ? -1 : 1;
-					for (int y = fromY; y != toY - modY; y = y + modY) {
-						checkedCoord = new Coordinate(fromX, y);
-						if (board.getPieceAt(checkedCoord) != null) {
-							throw new QueenInvalidMoveException();
+					modY = fromY < toY ? 1 : -1;
+					if ((fromY + 1 != toY) && (fromY - 1 != toY)) {
+						for (int y = fromY+1; y != toY+(-modY); y = y + modY) {
+							checkedCoord = new Coordinate(fromX, y);
+							if (board.getPieceAt(checkedCoord) != null) {
+								throw new QueenInvalidMoveException();
+							}
 						}
 					}
-
 					return true;
 				} else {
 					if (((toX + toY) == (fromX + fromY)) || ((toX - fromX) == (toY - fromY))) {
@@ -57,11 +60,7 @@ public class QueenMoveValidator implements PieceMoveValidator {
 							for (int i = 1; i != ((fromX - toX) * -modX) - 1; i++) {
 								checkedCoord = new Coordinate(fromX + (i * modX), fromY + (i * modY));
 								if (board.getPieceAt(checkedCoord) != null) {
-									throw new QueenInvalidMoveException();// z 5
-																			// 1
-																			// do
-																			// 6
-																			// 0
+									throw new QueenInvalidMoveException();			
 								}
 							}
 						}

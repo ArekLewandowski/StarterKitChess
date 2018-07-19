@@ -30,22 +30,26 @@ public class RookMoveValidator implements PieceMoveValidator {
 
 				if (fromY == toY) {
 					modX = fromX > toX ? -1 : 1;
-					for (int x = fromX; x == toX - modX; x = x + modX) {
-						checkedCoord = new Coordinate(x, fromY);
-						if (board.getPieceAt(checkedCoord) != null) {
-							throw new RookInvalidMoveException();
-						}
+					if ((fromX + 1 != toX) && (fromX - 1 != toX)) {
+						for (int x = fromX + (-modX); x == toX + (-modX); x = x + modX) {
+							checkedCoord = new Coordinate(x, fromY);
+							if (board.getPieceAt(checkedCoord) != null) {
+								throw new RookInvalidMoveException();
+							}
 
+						}
 					}
 
 					return true;
 
 				} else if (fromX == toX) {
 					modY = fromY > toY ? -1 : 1;
-					for (int y = fromY; y == toY - modY; y = y + modY) {
-						checkedCoord = new Coordinate(fromX, y);
-						if (board.getPieceAt(checkedCoord) != null) {
-							throw new RookInvalidMoveException();
+					if ((fromX + 1 != toX) && (fromX - 1 != toX)) {
+						for (int y = fromY + (-modY); y == toY + (-modY); y = y + modY) {
+							checkedCoord = new Coordinate(fromX, y);
+							if (board.getPieceAt(checkedCoord) != null) {
+								throw new RookInvalidMoveException();
+							}
 						}
 					}
 
@@ -59,41 +63,41 @@ public class RookMoveValidator implements PieceMoveValidator {
 	public List<Coordinate> checkAnyMove(Board board, Coordinate from) throws RookInvalidMoveException {
 		fromX = from.getX();
 		fromY = from.getY();
-			Coordinate checkedCoordinate = new Coordinate(fromX - 1, fromY);
-			try {
-				if (checkMove(board, from, checkedCoordinate)) {
-					validMove.add(checkedCoordinate);
-				}
-			} catch (RookInvalidMoveException e) {
+		Coordinate checkedCoordinate = new Coordinate(fromX - 1, fromY);
+		try {
+			if (checkMove(board, from, checkedCoordinate)) {
+				validMove.add(checkedCoordinate);
+			}
+		} catch (RookInvalidMoveException e) {
 
+		}
+		checkedCoordinate = new Coordinate(fromX, fromY - 1);
+		try {
+			if (checkMove(board, from, checkedCoordinate)) {
+				validMove.add(checkedCoordinate);
 			}
-			checkedCoordinate = new Coordinate(fromX, fromY - 1);
-			try {
-				if (checkMove(board, from, checkedCoordinate)) {
-					validMove.add(checkedCoordinate);
-				}
-				
-			} catch (RookInvalidMoveException e) {
-				
+
+		} catch (RookInvalidMoveException e) {
+
+		}
+		checkedCoordinate = new Coordinate(fromX + 1, fromY);
+		try {
+			if (checkMove(board, from, checkedCoordinate)) {
+				validMove.add(checkedCoordinate);
 			}
-			checkedCoordinate = new Coordinate(fromX + 1, fromY);
-			try {
-				if (checkMove(board, from, checkedCoordinate)) {
-					validMove.add(checkedCoordinate);
-				}
-				
-			} catch (RookInvalidMoveException e) {
-				
+
+		} catch (RookInvalidMoveException e) {
+
+		}
+		checkedCoordinate = new Coordinate(fromX, fromY + 1);
+		try {
+
+			if (checkMove(board, from, checkedCoordinate)) {
+				validMove.add(checkedCoordinate);
 			}
-			checkedCoordinate = new Coordinate(fromX, fromY + 1);
-			try {
-				
-				if (checkMove(board, from, checkedCoordinate)) {
-					validMove.add(checkedCoordinate);
-				}
-			} catch (RookInvalidMoveException e) {
-				
-			}
+		} catch (RookInvalidMoveException e) {
+
+		}
 		return validMove;
 	}
 

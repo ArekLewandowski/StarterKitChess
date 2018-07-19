@@ -46,22 +46,18 @@ public class ValidationTests {
 //	//	Coordinate from7 = new Coordinate(6, 1);
 //		//Coordinate to7 = new Coordinate(6, 2);
 //	//	bManager.performMove(from7, to7);
-////		//Invalid move of White
-//		Coordinate from8 = new Coordinate(4, 1);
-//		Coordinate to8 = new Coordinate(3, 2);
-//		bManager.performMove(from8, to8);
-//		
-		for(int y = 0; y<8; y++){
-			for(int x = 0; x<8; x++){
-				Coordinate coordinate = new Coordinate(x, y);
-				Piece checkedpiece = bManager.getBoard().getPieceAt(coordinate);
-				System.out.print("X: "+x+" , Y: "+y+" => ");
-				System.out.print(checkedpiece+"    ");
-			}
-			System.out.println(" ");
+////	
+//		for(int y = 0; y<8; y++){
+//			for(int x = 0; x<8; x++){
+//				Coordinate coordinate = new Coordinate(x, y);
+//				Piece checkedpiece = bManager.getBoard().getPieceAt(coordinate);
+//				System.out.print("X: "+x+" , Y: "+y+" => ");
+//				System.out.print(checkedpiece+"    ");
+//			}
+//			System.out.println(" ");
 			//System.out.println(bManager.getBoard().getMoveHistory());
 			
-		}		
+//		}		
 		System.out.println(bManager.getBoard().getState());
 	}
 	@Test
@@ -85,23 +81,23 @@ public class ValidationTests {
 	}
 	
 	@Test
-	public void testPerformMoveBishopAttack() throws InvalidMoveException {
+	public void shouldReturnQueenAfterPromotion() throws InvalidMoveException {
 		// given
 		Board board = new Board();
-		board.setPieceAt(Piece.WHITE_BISHOP, new Coordinate(0, 6));
-		board.setPieceAt(Piece.WHITE_KING, new Coordinate(4, 0));
-		board.setPieceAt(Piece.BLACK_ROOK, new Coordinate(1, 5));
-		board.setPieceAt(Piece.BLACK_KING, new Coordinate(4, 7));
+		board.setPieceAt(Piece.WHITE_PAWN, new Coordinate(1, 6));
+		board.setPieceAt(Piece.WHITE_ROOK, new Coordinate(1, 0));
+		board.setPieceAt(Piece.BLACK_KING, new Coordinate(4, 0));
+		board.setPieceAt(Piece.WHITE_KING, new Coordinate(7, 7));
 		
 		// when
 		BoardManager boardManager = new BoardManager(board);
-		Move move = boardManager.performMove(new Coordinate(0, 6), new Coordinate(1, 5));
+		Move move = boardManager.performMove(new Coordinate(1, 6), new Coordinate(1, 7));
 		
 		// then
-		assertEquals(MoveType.ATTACK, move.getType());
-		assertEquals(Piece.WHITE_BISHOP, move.getMovedPiece());
+		assertEquals(MoveType.ATTACK, move.getType());		
+		assertEquals(Piece.WHITE_PAWN, move.getMovedPiece());
+		assertEquals(Piece.WHITE_QUEEN, board.getPieceAt(new Coordinate(1, 7)));
 	}
-
 	
 private Move createDummyMove(Board board) {
 		

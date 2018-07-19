@@ -24,7 +24,7 @@ public class BoardDuplicator {
 			for(int y = 0; y<Board.SIZE; y++){
 				Coordinate coordinate = new Coordinate(x, y);
 				board.setPieceAt(copy.getPieceAt(coordinate), coordinate);
-				System.out.println("Update");
+				
 				
 				}
 			
